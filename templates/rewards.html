@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Rewards - Animal Detection System</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa; /* Light gray background */
+    }
+    .navbar {
+      background-color: #ffc107; /* Yellow background */
+      border: none; /* No border */
+      border-radius: 0; /* No rounded corners */
+      margin-bottom: 0; /* Remove default margin */
+    }
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333; /* Dark text color */
+      text-decoration: none; /* Remove underline */
+    }
+    .navbar .nav {
+      list-style-type: none; /* Remove list bullets */
+      margin: 0;
+      padding: 0;
+    }
+    .navbar .nav li {
+      display: inline-block; /* Display horizontally */
+      margin-right: 15px; /* Margin between items */
+    }
+    .navbar .nav li a {
+      color: #333; /* Dark text color */
+      text-decoration: none; /* Remove underline */
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .navbar .nav li a:hover {
+      text-decoration: underline; /* Underline on hover */
+    }
+    .navbar .user-info {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333; /* Dark text color */
+      margin-right: 15px; /* Margin between items */
+    }
+    .navbar .btn-logout {
+      background-color: #ffffff; /* White background */
+      color: #333; /* Dark text color */
+      font-weight: bold;
+      font-size: 16px;
+      border: 1px solid #333; /* Dark border */
+      border-radius: 5px; /* Rounded corners */
+      padding: 8px 15px; /* Padding inside button */
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* Smooth transition */
+    }
+    .navbar .btn-logout:hover {
+      background-color: #333; /* Dark background on hover */
+      color: #ffffff; /* White text on hover */
+    }
+    /* .navbar .btn-logout:hover {
+      background-color: #e5e5e5; /* Light gray background on hover */
+    /* } */ */
+    .container {
+      max-width: 800px; /* Maximum width of content */
+      margin: 50px auto; /* Center content with top margin */
+      background-color: #ffffff; /* White background */
+      padding: 20px; /* Padding inside container */
+      border: 1px solid #ddd; /* Light border */
+      border-radius: 5px; /* Rounded corners */
+    }
+    .header {
+      text-align: center; /* Center-align header */
+      margin-bottom: 20px; /* Margin below header */
+      color: #333; /* Dark text color */
+      font-weight: bold;
+    }
+    .reward-item {
+      margin-bottom: 20px; /* Margin below each reward item */
+      padding: 15px; /* Padding inside each reward item */
+      border: 1px solid #ddd; /* Light border */
+      border-radius: 5px; /* Rounded corners */
+    }
+    .reward-item p {
+      margin: 0; /* Remove margin inside paragraphs */
+      font-size: 18px;
+    }
+    .upload-info {
+      margin-top: 10px; /* Margin above upload info */
+      color: #777; /* Gray text color */
+    }
+    .btn-primary {
+      background-color: #ffc107; /* Yellow background */
+      border: none; /* No border */
+      color: #333; /* Dark text color */
+      font-weight: bold;
+      padding: 10px 20px; /* Padding inside button */
+      text-transform: uppercase; /* Uppercase text */
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* Smooth transition */
+    }
+    .btn-primary:hover {
+      background-color: #e5e5e5; /* Light gray background on hover */
+      color: #ffffff; /* White text on hover */
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="title" href="/">Vancouver Wildlife</a>
+    <ul class="nav">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/index">Upload</a></li>
+        <li><a href="/rewards">My Account</a></li>
+    </ul>
+    <div class="user-info">
+      {% if logged_in_user %}
+        <p>Welcome, {{ logged_in_user }}</p>
+      {% else %}
+        <p>Welcome, Guest</p>
+      {% endif %}
+    </div>
+    <form action="/logout" method="post">
+      <button type="submit" class="btn-logout">Log Out</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="header">Your Rewards</h1>
+
+  {% if uploads_count > 0 %}
+    <div class="reward-item">
+      <p>You have Rewards: {{ uploads_count }}</p>
+      <p class="upload-info">Rewards For: {{ logged_in_user }}</p>
+    </div>
+  {% else %}
+    <p>No rewards to display yet.</p>
+  {% endif %}
+
+  <a href="/index" class="btn btn-primary">Go back to Image Classification</a>
+</div>
+
+</body>
+</html>

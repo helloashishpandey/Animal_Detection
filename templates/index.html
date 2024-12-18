@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Image Classification</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa; /* Light gray background */
+    }
+    .navbar {
+      background-color: #ffc107; /* Yellow background */
+      border: none; /* No border */
+      border-radius: 0; /* No rounded corners */
+      margin-bottom: 0; /* Remove default margin */
+    }
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar .title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333; /* Dark text color */
+      text-decoration: none; /* Remove underline */
+    }
+    .navbar .nav {
+      list-style-type: none; /* Remove list bullets */
+      margin: 0;
+      padding: 0;
+    }
+    .navbar .nav li {
+      display: inline-block; /* Display horizontally */
+      margin-right: 15px; /* Margin between items */
+    }
+    .navbar .nav li a {
+      color: #333; /* Dark text color */
+      text-decoration: none; /* Remove underline */
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .navbar .nav li a:hover {
+      text-decoration: underline; /* Underline on hover */
+    }
+    .navbar .user-info {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333; /* Dark text color */
+      margin-right: 15px; /* Margin between items */
+    }
+    .navbar .btn-logout {
+      background-color: #ffffff; /* White background */
+      color: #333; /* Dark text color */
+      font-weight: bold;
+      font-size: 16px;
+      border: 1px solid #333; /* Dark border */
+      border-radius: 5px; /* Rounded corners */
+      padding: 8px 15px; /* Padding inside button */
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* Smooth transition */
+    }
+    .navbar .btn-logout:hover {
+      background-color: #333; /* Dark background on hover */
+      color: #ffffff; /* White text on hover */
+    }
+
+    /* Image Classification Page Specific Styles */
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto; /* Centers the image */
+    }
+    .prediction {
+      text-align: center; /* Centers the prediction text */
+    }
+    .details {
+      margin-top: 20px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.8); /* White background with opacity */
+      backdrop-filter: blur(10px); /* Blurred background */
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .background-image {
+      background-image: url("{{ background_image_url }}");
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end; /* Align items to the bottom */
+    }
+    .image-block {
+      margin: 10px auto;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.8); /* White background with opacity */
+      backdrop-filter: blur(10px); /* Blurred background */
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .slider img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin: 0 10px;
+    }
+    .slider-container {
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: rgb(0,0,0);
+      font-weight: 600;
+    }
+    .underline {
+      position: relative;
+      display: inline-block;
+    }
+    .underline:after {
+      content: '';
+      position: absolute;
+      width: 100px;
+      height: 5px;
+      background-color: #ffc107;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 5px;
+    }
+
+    /* Drag and Drop Styles */
+    .drag-drop-container {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .drag-drop-container.dragover {
+      background-color: #f0f0f0;
+    }
+    .drag-drop-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    .drag-drop-input {
+      display: none;
+    }
+    .image-container {
+  position: relative;
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 80%;
+}
+
+.overlay-text p {
+  font-size: 24px;
+  margin: 0;
+  line-height: 1.5;
+}
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a class="title" href="/">Vancouver Wildlife</a>
+      <ul class="nav">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/index">Upload</a></li>
+        <li><a href="/rewards">My Account</a></li>
+      </ul>
+      <div class="user-info">
+        {% if logged_in_user %}
+          <p>Welcome, {{ logged_in_user }}</p>
+        {% else %}
+          <p>Welcome, Guest</p>
+        {% endif %}
+      </div>
+      <form action="/logout" method="post">
+        <button type="submit" class="btn-logout">Log Out</button>
+      </form>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="image-container">
+      <img src="/static/images/image.jpg" alt="Inspiring Landscape">
+      <div class="overlay-text">
+        <p>"The love for all living creatures is the most noble attribute of man."</p>
+        <p>"If having a soul means being able to feel love and loyalty and gratitude, then animals are better off than a lot of humans."</p>
+        <p>"Animals are such agreeable friends—they ask no questions, they pass no criticisms."</p>
+      </div>
+    </div>
+  </div>
+<!-- Slider for images -->
+<div class="container slider-container">
+  <h1 class="header underline">Local Favorites in Vancouver</h1>
+  <div class="slider">
+    <div><img src="/static/images/1.jpg" alt="Cow"></div>
+    <div><img src="/static/images/2.jpg" alt="Hyena"></div>
+    <div><img src="/static/images/3.jpg" alt="Fox"></div>
+    <div><img src="/static/images/4.jpg" alt="Animal 4"></div>
+    <div><img src="/static/images/5.jpg" alt="Animal 5"></div>
+  </div>
+</div>
+
+<h1 class="header underline">Animal Detection System</h1>
+
+<!-- Form for image upload -->
+<form class="form-horizontal" action="/submit" method="post" enctype="multipart/form-data">
+  <div class="form-group">
+    <div class="col-sm-12">
+      <div class="drag-drop-container" id="drag-drop-container">
+        <p class="drag-drop-text">Drag and drop an image here or click to select a file</p>
+        <input type="file" class="drag-drop-input" name="my_image" accept="image/*" id="file_id">
+      </div>
+    </div>
+  </div>
+  <div class="form-group">        
+    <div class="col-sm-offset-5 col-sm-5">
+      <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+  </div>
+</form>
+
+{% if prediction %}
+<div class="prediction">
+  <h2>Prediction: <span style="color: blue;">{{ prediction }}</span></h2>
+  <div class="details">
+    <h4>Information:</h4>
+    <p>{{ details }}</p>
+  </div>
+</div>
+{% endif %}
+
+<div class="container background-image">
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    <h4>{{ error }}</h4>
+  </div>
+  {% endif %}
+  <br><br>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('.slider').slick({
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 2000,
+    });
+
+    // Drag and Drop Functionality
+    const dragDropContainer = document.getElementById('drag-drop-container');
+    const dragDropInput = document.getElementById('file_id');
+
+    dragDropContainer.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      dragDropContainer.classList.add('dragover');
+    });
+
+    dragDropContainer.addEventListener('dragleave', () => {
+      dragDropContainer.classList.remove('dragover');
+    });
+
+    dragDropContainer.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dragDropContainer.classList.remove('dragover');
+      const files = event.dataTransfer.files;
+      dragDropInput.files = files;
+    });
+
+    dragDropContainer.addEventListener('click', () => {
+      dragDropInput.click();
+    });
+  });
+</script>
+
+</body>
+</html>
